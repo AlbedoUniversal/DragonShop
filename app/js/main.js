@@ -1,60 +1,9 @@
-// $(function(){
-
-// });
-
-// const people = [
-//   { name: 'luis', age: '23', vocation: 'programmer', seruce: false },
-//   { name: 'moris', age: '33', vocation: 'manager', seruce: true },
-//   { name: 'boris', age: '43', vocation: 'designer', seruce: false },
-//   { name: 'sarkis', age: '53', vocation: 'CEO', seruce: true },
-//   { name: 'azis', vocation: 'TeamLead', seruce: false }
-// ];
-
-// /* Дописать функцию
-// она должна выводить в виде списка информацию из people
-// создавая под каждого человека li-шку
-// */
-// function showPeople(array) {
-//   const ul = document.querySelector('.list-group');
-//   array.forEach(function (element) {
-//     const newPeople = document.createElement('li');
-//     newPeople.addEventListener('click', () => {
-//       showDetail(element);
-//     });
-//     newPeople.classList.add('list-group-item');
-//     for (const i in element) {
-//       newPeople.innerHTML += `${i} ${element[i]} `;
-//     }
-//     ul.appendChild(newPeople);
-//   });
-// }
-
-// // надо написать функцию showDetail() {}
-// // которая вешается как обработчик клика на лишки
-// // и при клике на лишку, в блок .detailed должна выводиться вся информация об объекте
-
-// function showDetail(objectichek) {
-//   const div = document.querySelector('.detailed');
-//   div.innerHTML = "";
-//   for (const w in objectichek) {
-//     if (objectichek.hasOwnProperty(w) && w !== 'seruce') {
-//       div.innerText += ` ${w} ${objectichek[w]} `;
-//     }
-//   }
-// };
-
-// showPeople(people);
-
-const cards = document.querySelectorAll(".cards-item");
-const btns = document.querySelectorAll(".btn");
 function appropriationDataAtrr() {
-  cards.forEach(function(element, index) {
-    let indexes = index + 1;
-    element.setAttribute("data-key", `${indexes}`);
-  });
-  btns.forEach(function(buttons, i) {
-    let is = i + 1;
-    buttons.setAttribute("data-product-id", `${is}`);
+  const cards = document.querySelectorAll(".cards-item");
+  cards.forEach(function(card, index) {
+    const btns = card.querySelector(".btn");
+    card.setAttribute("data-key", `${index + 1}`);
+    btns.setAttribute("data-product-id", `${index + 1}`);
   });
 }
 appropriationDataAtrr();
