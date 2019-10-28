@@ -54,16 +54,13 @@ function appropriationDataAtrr() {
   });
   btns.forEach(function(buttons, i) {
     let is = i + 1;
-    buttons.setAttribute("data-number", `${is}`);
+    buttons.setAttribute("data-product-id", `${is}`);
   });
 }
 appropriationDataAtrr();
 
 // 1  - написать ф-цию, которая расставляет случайные id после заргрузки страницы для каждой карточки и конпки добавления в корзину
-// Saint Mojolicious, [25.10.19 21:03]
-// Результат такой:
 // <div class="cards-item" data-key="12">
-// ..........................
 //       <button class="btn" data-product-id="12">buy now</button>
 //  </div>
 
