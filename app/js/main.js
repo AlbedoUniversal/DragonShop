@@ -1,7 +1,9 @@
 window.onload = () => {
   const card = document.querySelector(".cards-item");
   console.log(card);
+  console.log(1);
 };
+
 // 2 задача - сделать корзины иконку, как присылал, примерно так
 // в ней надо сделать заготовку dropdown, в который будут попадать товары при добавлении
 
