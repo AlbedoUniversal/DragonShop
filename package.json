@@ -4,22 +4,39 @@
   "description": "start gulp",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --mode development --colors --progress",
+    "build": "rimraf dist && webpack --mode production --colors --progress"
   },
   "author": "Vadim Prokopchuk",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.26.5",
-    "del": "^5.0.0",
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^6.1.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.2",
-    "normalize.css": "^8.0.1"
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.4.3",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^1.0.1",
+    "cssnano": "^4.1.10",
+    "file-loader": "^2.0.0",
+    "html-loader": "^0.5.5",
+    "image-webpack-loader": "^4.6.0",
+    "mini-css-extract-plugin": "^0.4.5",
+    "node-sass": "^4.11.0",
+    "rimraf": "^2.6.3",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.3.1",
+    "webpack-stream": "^5.2.1",
+    "yargs": "^12.0.5"
   },
   "dependencies": {
-    "slick-carousel": "^1.8.1"
+    "autoprefixer": "^9.5.1",
+    "postcss-loader": "^3.0.0",
+    "uglifyjs-webpack-plugin": "^2.1.2"
   }
 }

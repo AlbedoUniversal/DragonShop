@@ -1,8 +1,5 @@
-window.onload = () => {
-  const card = document.querySelector(".cards-item");
-  console.log(card);
-  console.log(1);
-};
+let cardItem = '<div class="cards-item"><div class="photo"><img src="img/dragonEgg.svg" alt="" /></div><div class="text"><div class="naming"></div><div class="description"></div><div class="price"></div><div class="buy"><button class="btn">buy now</button></div></div></div>'
+
 
 // 2 задача - сделать корзины иконку, как присылал, примерно так
 // в ней надо сделать заготовку dropdown, в который будут попадать товары при добавлении
