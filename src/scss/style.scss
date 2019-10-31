@@ -47,7 +47,7 @@
   &-count {
     position: absolute;
     top: 0;
-    left: -19%;
+    left: -40%;
   }
   &-dropdown {
     position: absolute;
@@ -60,8 +60,9 @@
     ul {
       li {
         list-style-type: none;
-        width: 100px;
-        height: 30px;
+        display: block;
+        // width: 100px;
+        // height: 30px;
         border-bottom: 1px solid black;
       }
     }
@@ -111,9 +112,10 @@ img {
   margin-bottom: 20px;
   font-family: "Liu Jian Mao Cao", cursive;
 }
-.discription {
-  font-style: italic;
+.description {
+  // font-style: italic;
   font-family: "Liu Jian Mao Cao", cursive;
+  font-size: 23px;
   margin-bottom: 10px;
   padding: 0 26px;
 }
