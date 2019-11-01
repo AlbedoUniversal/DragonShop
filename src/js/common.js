@@ -1,5 +1,6 @@
 // импортируем JSON
 import GOODS from "./info.json";
+import { ENGINE_METHOD_PKEY_METHS } from "constants";
 
 // назначаем переменные на родительский контейнер и на шаблон карточки
 let cardsField = document.querySelector(".cards");
@@ -56,10 +57,10 @@ function init() {
   });
 }
 
+let arrCart = [];
 // добавление карточки в корзину
 function addToCart(e) {
-  let arrCart = [];
-  let ul = document.querySelector("ul");
+  let ul = document.querySelector(".list");
   let li = document.createElement("li");
   let span = document.createElement("span");
 
@@ -69,6 +70,7 @@ function addToCart(e) {
   });
 
   let allLi = document.querySelectorAll("li");
+  item.amount = 1;
   arrCart.push(item);
   count.innerText = allLi.length + 1;
 
@@ -80,11 +82,18 @@ function addToCart(e) {
         i !== "id" &&
         i !== "photo"
       ) {
-        ul.appendChild(li).innerText += `${elem[i]} `;
-        console.log(elem[i].length);
+        ul.appendChild(li).innerText += ` ${elem[i]} `;
         // boxSpanDrop.appendChild(span).innerText = parseInt(elem[i]);
       }
+      // if (elem.id === elem.id) {
+      //   elem.amount++;
+      // }
     }
+    if (elem.id === elem.id) {
+      // arrCart.pop();
+      elem.amount++;
+    }
+    console.log(cart);
   });
 }
 
