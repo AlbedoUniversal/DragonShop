@@ -1,15 +1,12 @@
 // импортируем JSON
 import GOODS from "./info.json";
-import { ENGINE_METHOD_PKEY_METHS } from "constants";
 
 // назначаем переменные на родительский контейнер и на шаблон карточки
 let cardsField = document.querySelector(".cards");
-
 let cart = document.querySelector(".cart-btn");
-
 let count = document.querySelector(".cart-count");
-
 let boxSpanDrop = document.querySelector(".cart-dropdown");
+let arrCart = [];
 
 let cardItemHTML =
   '<div class="photo"><img src="" alt="" /></div><div class="text"><div class="naming"></div><div class="description"></div><div class="price"></div><div class="buy"><button class="btn">buy now</button></div></div>';
@@ -57,11 +54,9 @@ function init() {
   });
 }
 
-let arrCart = [];
 // добавление карточки в корзину
 function addToCart(e) {
   let ul = document.querySelector(".list");
-  let li = document.createElement("li");
   let span = document.createElement("span");
 
   let relatedGood = e.target.parentNode.parentNode.parentNode;
@@ -69,32 +64,41 @@ function addToCart(e) {
     return relatedGood.getAttribute("id") === x.id;
   });
 
-  let allLi = document.querySelectorAll("li");
-  item.amount = 1;
-  arrCart.push(item);
-  count.innerText = allLi.length + 1;
+  // перед тем, как добавить объект в массив корзины, проверим, есть ли уже такой объект в корзине
+  // результат поиска мы засовываем в переменную res
+  let res = arrCart.find(x => x.id === item.id)
 
-  arrCart.forEach(elem => {
-    for (const i in elem) {
-      if (
-        elem.hasOwnProperty(i) &&
-        i !== "description" &&
-        i !== "id" &&
-        i !== "photo"
-      ) {
-        ul.appendChild(li).innerText += ` ${elem[i]} `;
-        // boxSpanDrop.appendChild(span).innerText = parseInt(elem[i]);
-      }
-      // if (elem.id === elem.id) {
-      //   elem.amount++;
-      // }
-    }
-    if (elem.id === elem.id) {
-      // arrCart.pop();
-      elem.amount++;
-    }
-    console.log(cart);
-  });
+  // если поиск найдет объект, то он вернется к нам. Если нет - вернется undefined
+  // Так как undefined - false, то применяем следующее условие
+  if(res) {
+    // если такой объект уже есть, находим элемент li, который отрендерился благодаря этому объекту
+    // при создании элемента li мы также присваиваем айдишник, который похож на айдишник карточки, 
+    // но немного видоизменен, чтобы не произошло конфликтов
+    let relatedLi = document.querySelector(`#${res.id}-card`)
+    // так как объект, лежащий в массиве, уже имеет свойство amount, то просто добавляем к нему 1
+    res.amount++
+
+    // и делаем перерендер этого элемента
+    relatedLi.innerText = `${res.naming}, ${res.price}руб. * ${res.amount}шт. = ${res.price * res.amount}руб.`
+  } else {
+    // если объекта нет, то мы создаем li
+    let li = document.createElement("li");
+    // присваиваем id. Внимательно посмотри, как это делается
+    li.setAttribute('id', `${item.id}-card`)
+    // присваиваем объекту свойство amount
+    item.amount = 1
+    // добавляем его в массив
+    arrCart.push(item)
+    // присваиваем li класс для дальнейшей стилизации
+    li.classList.add('list-item')
+    // делаем рендер элемента
+    li.innerText = `${item.naming}, ${item.price}руб. * ${item.amount}шт. = ${item.price * item.amount}руб.`
+    // и добавляем его в родительский элемент ul
+    ul.appendChild(li)
+  }
+
+  // счетчик корзины должен считать длину массива корзины
+  count.innerText = arrCart.length
 }
 
 // показ дроп дауна
