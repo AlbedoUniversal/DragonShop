@@ -1,14 +1,13 @@
 // импортируем JSON
 import GOODS from "./info.json";
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 // назначаем переменные на родительский контейнер и на шаблон карточки
-let cardsField = document.querySelector(".cards");
-let cart = document.querySelector(".cart-btn");
-let count = document.querySelector(".cart-count");
-let boxSpanDrop = document.querySelector(".cart-dropdown");
+const cardsField = document.querySelector(".cards");
+const cart = document.querySelector(".cart-btn");
 let arrCart = [];
 
-let cardItemHTML =
+const cardItemHTML =
   '<div class="photo"><img src="" alt="" /></div><div class="text"><div class="naming"></div><div class="description"></div><div class="price"></div><div class="buy"><button class="btn">buy now</button></div></div>';
 
 function init() {
@@ -16,7 +15,7 @@ function init() {
   for (let i = 0; i < GOODS.length; i++) {
     // создаем div
     let card = document.createElement("div");
-    // вешаем на него класс
+    // вешаем на него клconst
     card.classList.add("cards-item");
     // заполняем див шаблоном
     card.innerHTML = cardItemHTML;
@@ -56,49 +55,75 @@ function init() {
 
 // добавление карточки в корзину
 function addToCart(e) {
-  let ul = document.querySelector(".list");
-  let span = document.createElement("span");
+  const count = document.querySelector(".cart-count");
+
+  let newSumm = 0;
+  const spanSumm = document.querySelector(".summ");
+
+  const ul = document.querySelector(".list");
 
   let relatedGood = e.target.parentNode.parentNode.parentNode;
   let item = GOODS.find(function(x) {
     return relatedGood.getAttribute("id") === x.id;
   });
-
   // перед тем, как добавить объект в массив корзины, проверим, есть ли уже такой объект в корзине
   // результат поиска мы засовываем в переменную res
-  let res = arrCart.find(x => x.id === item.id)
+  let res = arrCart.find(x => x.id === item.id);
 
   // если поиск найдет объект, то он вернется к нам. Если нет - вернется undefined
   // Так как undefined - false, то применяем следующее условие
-  if(res) {
+  let deleteBtn = document.createElement("button");
+  deleteBtn.innerText = "удалить этот товар";
+  deleteBtn.addEventListener("click", () => {
+    deleteThis(item.id);
+  });
+  if (res) {
     // если такой объект уже есть, находим элемент li, который отрендерился благодаря этому объекту
-    // при создании элемента li мы также присваиваем айдишник, который похож на айдишник карточки, 
+    // при создании элемента li мы также присваиваем айдишник, который похож на айдишник карточки,
     // но немного видоизменен, чтобы не произошло конфликтов
-    let relatedLi = document.querySelector(`#${res.id}-card`)
+    let relatedLi = document.querySelector(`#${res.id}-card`);
     // так как объект, лежащий в массиве, уже имеет свойство amount, то просто добавляем к нему 1
-    res.amount++
+    res.amount++;
 
     // и делаем перерендер этого элемента
-    relatedLi.innerText = `${res.naming}, ${res.price}руб. * ${res.amount}шт. = ${res.price * res.amount}руб.`
+    relatedLi.innerText = `${res.naming}, ${res.price}руб. * ${
+      res.amount
+    }шт. = ${res.price * res.amount}руб.`;
+    relatedLi.appendChild(deleteBtn);
   } else {
     // если объекта нет, то мы создаем li
     let li = document.createElement("li");
+
     // присваиваем id. Внимательно посмотри, как это делается
-    li.setAttribute('id', `${item.id}-card`)
+    li.setAttribute("id", `${item.id}-card`);
     // присваиваем объекту свойство amount
-    item.amount = 1
+    item.amount = 1;
     // добавляем его в массив
-    arrCart.push(item)
+
+    arrCart.push(item);
     // присваиваем li класс для дальнейшей стилизации
-    li.classList.add('list-item')
+    li.classList.add("list-item");
     // делаем рендер элемента
-    li.innerText = `${item.naming}, ${item.price}руб. * ${item.amount}шт. = ${item.price * item.amount}руб.`
+    li.innerText = `${item.naming}, ${item.price}руб. * ${
+      item.amount
+    }шт. = ${item.price * item.amount}руб.`;
     // и добавляем его в родительский элемент ul
-    ul.appendChild(li)
+    ul.appendChild(li);
+    li.appendChild(deleteBtn);
   }
 
+  // вывод итоговой стоимости товара
+  let countLi = document.querySelectorAll(".list-item");
+  countLi.forEach(p => {
+    let str = p.innerText;
+    str = str.substring(str.indexOf("=") + 1);
+    str = parseInt(str.replace(/[^\d]/g, ""));
+    newSumm += str;
+  });
+  spanSumm.innerHTML = `общая сумма = ${newSumm}руб.`;
+
   // счетчик корзины должен считать длину массива корзины
-  count.innerText = arrCart.length
+  count.innerText = arrCart.length;
 }
 
 // показ дроп дауна
@@ -109,6 +134,12 @@ cart.addEventListener("click", () => {
 function activeDrop() {
   let dropDown = document.querySelector(".cart-dropdown");
   dropDown.classList.toggle("activeDrop");
+}
+
+function deleteThis(id) {
+  const index = `${id}-card`;
+
+  console.log(parenList.querySelector(`${index}`));
 }
 
 // в конце запускаем головную функцию без window.onload
