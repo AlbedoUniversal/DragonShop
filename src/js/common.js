@@ -75,7 +75,7 @@ function addToCart(e) {
   let deleteBtn = document.createElement("button");
   deleteBtn.innerText = "удалить этот товар";
   deleteBtn.addEventListener("click", () => {
-    deleteThis(item.id);
+    deleteThis(item.id, ul);
   });
   if (res) {
     // если такой объект уже есть, находим элемент li, который отрендерился благодаря этому объекту
@@ -136,10 +136,9 @@ function activeDrop() {
   dropDown.classList.toggle("activeDrop");
 }
 
-function deleteThis(id) {
+function deleteThis(id, ul) {
   const index = `${id}-card`;
-
-  console.log(parenList.querySelector(`${index}`));
+  ul.querySelector(`#${index}`).remove();
 }
 
 // в конце запускаем головную функцию без window.onload
