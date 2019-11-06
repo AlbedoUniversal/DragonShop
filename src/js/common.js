@@ -75,7 +75,7 @@ function addToCart(e) {
   let deleteBtn = document.createElement("button");
   deleteBtn.innerText = "удалить этот товар";
   deleteBtn.addEventListener("click", () => {
-    deleteThis(item.id, ul);
+    deleteThis(item.id, ul, newSumm, spanSumm);
   });
   if (res) {
     // если такой объект уже есть, находим элемент li, который отрендерился благодаря этому объекту
@@ -112,7 +112,7 @@ function addToCart(e) {
     li.appendChild(deleteBtn);
   }
 
-  // вывод итоговой стоимости товара
+  // вывод итоговой стоимости товаров
   let countLi = document.querySelectorAll(".list-item");
   countLi.forEach(p => {
     let str = p.innerText;
@@ -136,9 +136,15 @@ function activeDrop() {
   dropDown.classList.toggle("activeDrop");
 }
 
-function deleteThis(id, ul) {
+function deleteThis(id, ul, summa, k) {
   const index = `${id}-card`;
-  ul.querySelector(`#${index}`).remove();
+  let removed = ul.querySelector(`#${index}`).innerText;
+  removed = removed.substring(removed.indexOf("=") + 1);
+  removed = parseInt(removed.replace(/[^\d]/g, ""));
+  removed;
+  summa = summa - removed;
+  k.innerHTML = `общая сумма = ${summa}руб.`;
+  console.log(summa);
 }
 
 // в конце запускаем головную функцию без window.onload
