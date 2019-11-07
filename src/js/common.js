@@ -1,6 +1,5 @@
 // импортируем JSON
 import GOODS from "./info.json";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 // назначаем переменные на родительский контейнер и на шаблон карточки
 const cardsField = document.querySelector(".cards");
@@ -11,16 +10,16 @@ const cardItemHTML =
   '<div class="photo"><img src="" alt="" /></div><div class="text"><div class="naming"></div><div class="description"></div><div class="price"></div><div class="buy"><button class="btn">buy now</button></div></div>';
 
 function init() {
-  // Запускаем цикл по длине массива товаров
   for (let i = 0; i < GOODS.length; i++) {
-    // создаем div
-    let card = document.createElement("div");
-    // вешаем на него клconst
-    card.classList.add("cards-item");
-    // заполняем див шаблоном
-    card.innerHTML = cardItemHTML;
-    // вешаем на див айдишник, к каждому диву свой
-    card.setAttribute("id", GOODS[i].id);
+    // Запускаем цикл по длине массива товаров
+
+    let card = document.createElement("div"); // создаем div
+
+    card.classList.add("cards-item"); // вешаем на него клconst
+
+    card.innerHTML = cardItemHTML; // заполняем див шаблоном
+
+    card.setAttribute("id", GOODS[i].id); // вешаем на див айдишник, к каждому диву свой
 
     // находим контейнеры, в котором находятся теги картинки и текстов. Мне нужно получить чистый массив, а не массив NodeElement
     let photoArr = [...card.childNodes].find(x => x.className === "photo");
@@ -40,12 +39,10 @@ function init() {
     description.innerText = GOODS[i].description;
     price.innerText = GOODS[i].price;
 
-    // и заполняем родительский элемент свежеиспеченной карточкой
-    cardsField.appendChild(card);
+    cardsField.appendChild(card); // и заполняем родительский элемент свежеиспеченной карточкой
   }
 
-  // далее получаем массив всех кнопок всех карточек (обратите внимание, что мы делаем это после цикла)
-  let btnsToCard = document.querySelectorAll(".btn");
+  let btnsToCard = document.querySelectorAll(".btn"); // далее получаем массив всех кнопок всех карточек (обратите внимание, что мы делаем это после цикла)
 
   // и вешаем на каждую обработчик клика
   btnsToCard.forEach(x => {
@@ -56,16 +53,15 @@ function init() {
 // добавление карточки в корзину
 function addToCart(e) {
   const count = document.querySelector(".cart-count");
-
-  let newSumm = 0;
   const spanSumm = document.querySelector(".summ");
-
   const ul = document.querySelector(".list");
 
+  let newSumm = 0;
   let relatedGood = e.target.parentNode.parentNode.parentNode;
   let item = GOODS.find(function(x) {
     return relatedGood.getAttribute("id") === x.id;
   });
+
   // перед тем, как добавить объект в массив корзины, проверим, есть ли уже такой объект в корзине
   // результат поиска мы засовываем в переменную res
   let res = arrCart.find(x => x.id === item.id);
@@ -75,40 +71,34 @@ function addToCart(e) {
   let deleteBtn = document.createElement("button");
   deleteBtn.innerText = "удалить этот товар";
   deleteBtn.addEventListener("click", () => {
-    deleteThis(item.id, ul, newSumm, spanSumm);
+    deleteThis(item);
   });
   if (res) {
     // если такой объект уже есть, находим элемент li, который отрендерился благодаря этому объекту
     // при создании элемента li мы также присваиваем айдишник, который похож на айдишник карточки,
     // но немного видоизменен, чтобы не произошло конфликтов
     let relatedLi = document.querySelector(`#${res.id}-card`);
-    // так как объект, лежащий в массиве, уже имеет свойство amount, то просто добавляем к нему 1
-    res.amount++;
 
-    // и делаем перерендер этого элемента
+    res.amount++; // так как объект, лежащий в массиве, уже имеет свойство amount, то просто добавляем к нему 1
+
     relatedLi.innerText = `${res.naming}, ${res.price}руб. * ${
+      // и делаем перерендер этого элемента
       res.amount
     }шт. = ${res.price * res.amount}руб.`;
     relatedLi.appendChild(deleteBtn);
   } else {
-    // если объекта нет, то мы создаем li
-    let li = document.createElement("li");
+    let li = document.createElement("li"); // если объекта нет, то мы создаем li
+    li.setAttribute("id", `${item.id}-card`); // присваиваем id. Внимательно смотрим, как это делается
+    item.amount = 1; // присваиваем объекту свойство amount
+    arrCart.push(item); // добавляем его в массив
+    li.classList.add("list-item"); // присваиваем li класс для дальнейшей стилизации
 
-    // присваиваем id. Внимательно посмотри, как это делается
-    li.setAttribute("id", `${item.id}-card`);
-    // присваиваем объекту свойство amount
-    item.amount = 1;
-    // добавляем его в массив
-
-    arrCart.push(item);
-    // присваиваем li класс для дальнейшей стилизации
-    li.classList.add("list-item");
-    // делаем рендер элемента
     li.innerText = `${item.naming}, ${item.price}руб. * ${
+      // делаем рендер элемента
       item.amount
     }шт. = ${item.price * item.amount}руб.`;
-    // и добавляем его в родительский элемент ul
-    ul.appendChild(li);
+
+    ul.appendChild(li); // и добавляем его в родительский элемент ul
     li.appendChild(deleteBtn);
   }
 
@@ -136,15 +126,13 @@ function activeDrop() {
   dropDown.classList.toggle("activeDrop");
 }
 
-function deleteThis(id, ul, summa, k) {
-  const index = `${id}-card`;
-  let removed = ul.querySelector(`#${index}`).innerText;
-  removed = removed.substring(removed.indexOf("=") + 1);
-  removed = parseInt(removed.replace(/[^\d]/g, ""));
-  removed;
-  summa = summa - removed;
-  k.innerHTML = `общая сумма = ${summa}руб.`;
-  console.log(summa);
+function deleteThis(liId) {
+  // console.log(liId);
+  arrCart.forEach(removed => {
+    if (liId.id === removed.id) {
+      console.log(`${liId}`);
+    }
+  });
 }
 
 // в конце запускаем головную функцию без window.onload
