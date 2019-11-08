@@ -127,7 +127,6 @@ function activeDrop() {
 }
 
 function deleteThis(liId) {
-  // console.log(liId);
   arrCart.forEach(removed => {
     if (liId.id === removed.id) {
       console.log(`${liId}`);
