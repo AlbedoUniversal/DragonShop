@@ -126,12 +126,9 @@ function activeDrop() {
   dropDown.classList.toggle("activeDrop");
 }
 
-function deleteThis(liId) {
-  arrCart.forEach(removed => {
-    if (liId.id === removed.id) {
-      console.log(`${liId}`);
-    }
-  });
+function deleteThis(verifiable) {
+  let index = arrCart.indexOf(verifiable, 0);
+  arrCart.splice(index, 1);
 }
 
 // в конце запускаем головную функцию без window.onload
