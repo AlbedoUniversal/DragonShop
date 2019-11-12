@@ -5,6 +5,8 @@ import GOODS from "./info.json";
 const cardsField = document.querySelector(".cards");
 const cart = document.querySelector(".cart-btn");
 let arrCart = [];
+const count = document.querySelector(".cart-count");
+const spanSumm = document.querySelector(".summ");
 
 const cardItemHTML =
   '<div class="photo"><img src="" alt="" /></div><div class="text"><div class="naming"></div><div class="description"></div><div class="price"></div><div class="buy"><button class="btn">buy now</button></div></div>';
@@ -48,15 +50,48 @@ function init() {
   btnsToCard.forEach(x => {
     x.addEventListener("click", addToCart);
   });
+
+  // запускаем рендер итоговой стоимости в функции инициализации, чтобы там по дефолту стояло 0
+  renderTotal()
+}
+
+// функция рендеринга корзины
+function renderCart() {
+  // определяем родительский элемент
+  const ul = document.querySelector(".list");
+  // очищаем его содержимое для перерендеринга. Чтобы перезаписать данные, необходимо иметь пустой контейнер, чтобы не осталось ничего лишнего
+  ul.innerHTML = ''
+
+  // запускаем цикл по длине массива корзины
+  for(let i = 0; i < arrCart.length; i++) {
+    // дальше как обычно, создаем элемент, присваиваем ему всю хуйню и т.д. Вместо item используем arrCart[i] - надеюсь, ты понимаешь, почему
+    let li = document.createElement("li")
+    let deleteBtn = document.createElement("button");
+
+    li.setAttribute("id", `${arrCart[i].id}-card`)
+    li.classList.add("list-item");
+    li.innerText = `${arrCart[i].naming}, ${arrCart[i].price}руб. * ${arrCart[i].amount}шт. = ${arrCart[i].price * arrCart[i].amount}руб.`;
+
+    deleteBtn.innerText = "удалить этот товар";
+    deleteBtn.addEventListener("click", () => {
+      deleteThis(arrCart[i].id);
+    });
+
+    ul.appendChild(li);
+    li.appendChild(deleteBtn);
+  }
+}
+
+// функция рендеринга итоговой стоимости
+function renderTotal() {
+  // вместо твоей громоздкой конструкции я поменял в JSON поля price со строк на числа и получилось вот что
+  spanSumm.innerHTML = `Общая стоимость: ${arrCart.map(x => x.price * x.amount).reduce((a, b) => a + b, 0)} руб.`
+  // счетчик корзины должен считать длину массива корзины
+  count.innerText = arrCart.length;
 }
 
 // добавление карточки в корзину
 function addToCart(e) {
-  const count = document.querySelector(".cart-count");
-  const spanSumm = document.querySelector(".summ");
-  const ul = document.querySelector(".list");
-
-  let newSumm = 0;
   let relatedGood = e.target.parentNode.parentNode.parentNode;
   let item = GOODS.find(function(x) {
     return relatedGood.getAttribute("id") === x.id;
@@ -66,54 +101,16 @@ function addToCart(e) {
   // результат поиска мы засовываем в переменную res
   let res = arrCart.find(x => x.id === item.id);
 
-  // если поиск найдет объект, то он вернется к нам. Если нет - вернется undefined
-  // Так как undefined - false, то применяем следующее условие
-  let deleteBtn = document.createElement("button");
-  deleteBtn.innerText = "удалить этот товар";
-  deleteBtn.addEventListener("click", () => {
-    deleteThis(item);
-  });
   if (res) {
-    // если такой объект уже есть, находим элемент li, который отрендерился благодаря этому объекту
-    // при создании элемента li мы также присваиваем айдишник, который похож на айдишник карточки,
-    // но немного видоизменен, чтобы не произошло конфликтов
-    let relatedLi = document.querySelector(`#${res.id}-card`);
-
-    res.amount++; // так как объект, лежащий в массиве, уже имеет свойство amount, то просто добавляем к нему 1
-
-    relatedLi.innerText = `${res.naming}, ${res.price}руб. * ${
-      // и делаем перерендер этого элемента
-      res.amount
-    }шт. = ${res.price * res.amount}руб.`;
-    relatedLi.appendChild(deleteBtn);
+    res.amount++;
   } else {
-    let li = document.createElement("li"); // если объекта нет, то мы создаем li
-    li.setAttribute("id", `${item.id}-card`); // присваиваем id. Внимательно смотрим, как это делается
-    item.amount = 1; // присваиваем объекту свойство amount
-    arrCart.push(item); // добавляем его в массив
-    li.classList.add("list-item"); // присваиваем li класс для дальнейшей стилизации
-
-    li.innerText = `${item.naming}, ${item.price}руб. * ${
-      // делаем рендер элемента
-      item.amount
-    }шт. = ${item.price * item.amount}руб.`;
-
-    ul.appendChild(li); // и добавляем его в родительский элемент ul
-    li.appendChild(deleteBtn);
+    item.amount = 1;
+    arrCart.push(item);
   }
 
-  // вывод итоговой стоимости товаров
-  let countLi = document.querySelectorAll(".list-item");
-  countLi.forEach(p => {
-    let str = p.innerText;
-    str = str.substring(str.indexOf("=") + 1);
-    str = parseInt(str.replace(/[^\d]/g, ""));
-    newSumm += str;
-  });
-  spanSumm.innerHTML = `общая сумма = ${newSumm}руб.`;
-
-  // счетчик корзины должен считать длину массива корзины
-  count.innerText = arrCart.length;
+  // при каждом добавлении товара мы запускаем рендер корзины и итоговой стоимости
+  renderCart()
+  renderTotal()
 }
 
 // показ дроп дауна
@@ -126,9 +123,13 @@ function activeDrop() {
   dropDown.classList.toggle("activeDrop");
 }
 
-function deleteThis(verifiable) {
-  let index = arrCart.indexOf(verifiable, 0);
-  arrCart.splice(index, 1);
+function deleteThis(id) {
+  let related = arrCart.find(x => x.id === id)
+  arrCart.splice(arrCart.indexOf(related), 1);
+
+  // при каждом удалении товара мы запускаем рендер корзины и итоговой стоимости
+  renderCart()
+  renderTotal()
 }
 
 // в конце запускаем головную функцию без window.onload
